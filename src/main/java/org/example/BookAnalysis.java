@@ -17,7 +17,8 @@ public class BookAnalysis{
         return (int) Pattern.compile("(?i)mensch").matcher(text).results().count();
     }
 
-    public static List<String> longWords(String text) {
-        return Arrays.stream(text.split("\\s+")).filter(word -> word.length() > 18).toList();
+    public static int longWords(String text) {
+        return (int) Pattern.compile("\\b\\w{19,}\\b").matcher(text).results().count();
+
     }
 }

@@ -5,26 +5,25 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class BookAnalysisTest {
-    private final String sampleText = "Mensch Menschlichkeit unbeschreiblich der Himmel ist blau und wunderbar.";
+    BookAnalysis book = new BookAnalysis();
 
     @Test
     void testWordCount() {
-        assertEquals(8, BookAnalysis.wordCount(sampleText));
+        assertEquals(8, book.wordCount("this sentence has eight words in its structure"));
     }
 
     @Test
     void testMainWordCount() {
-        assertEquals(5, BookAnalysis.mainWordCount(sampleText));
+        assertEquals(8, book.mainWordCount("this sentence has eight words in its structure"));
     }
 
     @Test
     void testMenschCount() {
-        assertEquals(2, BookAnalysis.menschCount(sampleText));
+        assertEquals(2, book.menschCount("Mensch oder menschen"));
     }
 
     @Test
     void testLongWords() {
-        List<String> result = BookAnalysis.longWords(sampleText);
-        assertTrue(result.contains("unbeschreiblich"));
+        assertEquals(1, book.longWords("immunohistochemical"));
     }
 }
