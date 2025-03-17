@@ -24,6 +24,7 @@ public class BookAnalysisTest {
 
     @Test
     void testLongWords() {
-        assertEquals(1, book.longWords("immunohistochemical"));
+        List<String> longWords = book.longWords("immunohistochemical");
+        assertEquals(1, longWords.size()); // Expecting 1 long word
     }
 }

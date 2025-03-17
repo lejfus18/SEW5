@@ -14,6 +14,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.26</version> <!-- Choose the appropriate version -->
+        </dependency>
         <!-- Jackson Dependencies for JSON parsing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -41,6 +46,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 
 
 </project>
