@@ -46,14 +46,4 @@ public class DatabaseConnection {
         }
     }
 
-    public static void main(String[] args) {
-        // Example usage: Insert data into the database
-        String title = "Sample Book";
-        int wordCount = 200;
-        int mainWordCount = 150;
-        int menschCount = 5;
-        String longWords = "Donaudampfschifffahrtskapitän, Vollholzhausbaumeister";
-
-        insertResult(title, wordCount, mainWordCount, menschCount, longWords);
-    }
 }

@@ -6,6 +6,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BookAnalysis {
     private static final List<String> STOP_WORDS = Arrays.asList("und", "oder", "der", "die", "das", "ein", "eine");
@@ -23,7 +24,12 @@ public class BookAnalysis {
     }
 
     public static List<String> longWords(String text) {
-        return Arrays.stream(text.split("\\s+")).filter(word -> word.length() > 18).toList();
+        // Compiles a regex to find whole words at least 19 characters long
+        return Pattern.compile("\\b\\w{19,}\\b")
+                .matcher(text)
+                .results()  // Finds all matches for the pattern
+                .map(matchResult -> matchResult.group())  // Extracts the matched word from each match result
+                .collect(Collectors.toList());  // Collects all matched words into a List
     }
 
     public static void writeResultsToFile(List<Map<String, Object>> results, String filePath) throws IOException {
@@ -33,11 +39,11 @@ public class BookAnalysis {
         int id = 1;
         for (Map<String, Object> result : results) {
             sb.append(id++).append("\t");
-            sb.append("Buchtitel").append("\t");
-            sb.append(result.get("wordCount")).append("\t");
-            sb.append(result.get("mainWordCount")).append("\t");
-            sb.append(result.get("menschCount")).append("\t");
-            sb.append(String.join(", ", (List<String>) result.get("longWords"))).append("\n");
+            sb.append("title").append("\t");
+            sb.append(result.get("word_count")).append("\t");
+            sb.append(result.get("main_word_count")).append("\t");
+            sb.append(result.get("mensch_count")).append("\t");
+            sb.append(String.join(", ", (List<String>) result.get("long_words"))).append("\n");
         }
 
         Files.write(Path.of(filePath), sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);

@@ -7,13 +7,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.example.BookAnalysis.writeResultsToFile;
 
 public class BooksApi {
 
     public void fetchAndInsertBooksIntoDatabase() {
+        // Start time measurement (GET request)
+        long startTime = System.currentTimeMillis();
+
         String apiUrl = "https://htl-assistant.vercel.app/api/projects/sew5";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -31,6 +37,8 @@ public class BooksApi {
             List<String[]> tableData = new ArrayList<>();
             tableData.add(new String[]{"ID", "Title", "Word Count", "Main Word Count", "Mensch Count", "Long Words"});
 
+            List<Map<String, Object>> analysisResults = new ArrayList<>();
+
             if (booksNode != null && booksNode.isArray()) {
                 // Iterate over each book in the response
                 for (JsonNode book : booksNode) {
@@ -47,7 +55,7 @@ public class BooksApi {
                     String longWordsStr = String.join(", ", longWords);
 
                     // Add the data to the table
-                    tableData.add(new String[]{
+                    tableData.add(new String[] {
                             String.valueOf(tableData.size()), title,
                             String.valueOf(wordCount),
                             String.valueOf(mainWordCount),
@@ -57,17 +65,40 @@ public class BooksApi {
 
                     // Insert the analyzed data into the database
                     DatabaseConnection.insertResult(title, wordCount, mainWordCount, menschCount, longWordsStr);
+
+                    // Store analysis results for file writing
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("word_count", wordCount);
+                    result.put("main_word_count", mainWordCount);
+                    result.put("mensch_count", menschCount);
+                    result.put("long_words", longWords);
+                    analysisResults.add(result);
                 }
 
                 // After inserting into the database, print the table
                 printTable(tableData);
-                System.out.println("✅ Data successfully inserted into the database.");
+                System.out.println("Data successfully inserted into the database.");
+
+                // Write the results to a file
+                writeResultsToFile(analysisResults, "results.csv");
+                System.out.println("Analysis results written to results.csv");
+
             } else {
-                System.out.println("❌ No books found in the API response.");
+                System.out.println("No books found in the API response.");
             }
+
         } catch (IOException | InterruptedException e) {
-            System.err.println("❌ Error during the request: " + e.getMessage());
+            System.err.println("Error during the request: " + e.getMessage());
         }
+
+        // End time measurement (POST request)
+        long endTime = System.currentTimeMillis();
+
+        // Calculate the total time in milliseconds
+        long totalTime = endTime - startTime;
+
+        // Output the total time
+        System.out.println("Total time: " + totalTime + " milliseconds");
     }
 
     // Print the table in a readable format
